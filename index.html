@@ -369,6 +369,14 @@
         event.preventDefault();
         const name = document.getElementById('newClientName').value.trim();
         const id = document.getElementById('newClientId').value.trim();
+        
+        // التحقق من وجود العميل مسبقاً لمنع التكرار
+        const isExists = clientsDatabase.some(c => c.id === id);
+        if (isExists) {
+            alert("خطأ: هذا الـ ID مسجل بالفعل في المنظومة، لا يمكن تكرار نفس الـ ID!");
+            return;
+        }
+
         const clientPayload = { type: currentAddingType, name: name, id: id, debt: 0, totalOrders: 0 };
         db.ref('clients/' + id).set(clientPayload);
         sendToGoogleSheet("createTab", clientPayload);
@@ -413,4 +421,3 @@
 </script>
 </body>
 </html>
-
