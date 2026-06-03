@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROKA Recharge Agency -  ROKA Recharge Agency</title>
+    <title>Roka -Roka</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
@@ -199,7 +199,7 @@
             color: var(--primary-color);
         }
 
-        input[type="text"], input[type="password"], input[type="number"], select { 
+        input[type="text"], input[type="password"], input[type="number"], input[type="date"], select { 
             width: 100%; 
             padding: 14px; 
             background: var(--input-bg); 
@@ -220,6 +220,10 @@
 
         input:hover, select:hover {
             border-color: rgba(255, 26, 26, 0.5);
+        }
+
+        input[type="date"] {
+            color-scheme: dark;
         }
 
         .flex-group { display: flex; gap: 12px; }
@@ -408,6 +412,139 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
+        .search-result-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .search-result-box .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-result-box .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-box .summary-row strong {
+            color: var(--text-secondary);
+        }
+
+        .search-result-box .summary-row span {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .search-result-box .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .search-result-box .log-table th {
+            background: rgba(255, 26, 26, 0.2);
+            color: var(--primary-color);
+            padding: 10px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .search-result-box .log-table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .search-result-box .log-table tr:hover td {
+            background: rgba(255, 26, 26, 0.05);
+        }
+
+        .search-result-box .no-logs {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--success-color), #00994d) !important;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 204, 102, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 204, 102, 0.5);
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-download-btn {
+            background: linear-gradient(135deg, #ff9500, #ff5500) !important;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 15px;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+        }
+
+        .admin-download-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 149, 0, 0.5);
+        }
+
+        .date-filter-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .date-filter-row .form-group {
+            flex: 1;
+            min-width: 140px;
+            margin-bottom: 0;
+        }
+
+        .date-filter-row label {
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .date-filter-row input[type="date"] {
+            padding: 10px;
+            font-size: 14px;
+        }
+
         .admin-table { 
             width: 100%; 
             border-collapse: separate;
@@ -500,8 +637,18 @@
                 flex-direction: column;
                 gap: 10px;
             }
+
+            .date-filter-row {
+                flex-direction: column;
+            }
+
+            .date-filter-row .form-group {
+                min-width: 100%;
+            }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -526,7 +673,7 @@
     </div>
 
     <div id="dashboardPage" class="form-page">
-        <h2>لوحة العمليات الشحن [ROKA Recharge Agency]</h2>
+        <h2>لوحة العمليات الشحن [Rooka👑 Recharge Agency]</h2>
         <div id="staffBadge" class="badge"></div>
 
         <div class="search-container">
@@ -534,6 +681,16 @@
             <div class="flex-group">
                 <input type="text" id="searchIdInput" placeholder="اكتب ID الوكيل أو المستخدم">
                 <button type="button" class="btn-blue" style="width: 100px; margin: 0;" onclick="lookupDebtById()">فحص</button>
+            </div>
+            <div class="date-filter-row">
+                <div class="form-group">
+                    <label>📅 من تاريخ:</label>
+                    <input type="date" id="searchFromDate">
+                </div>
+                <div class="form-group">
+                    <label>📅 إلى تاريخ:</label>
+                    <input type="date" id="searchToDate">
+                </div>
             </div>
             <div id="searchResult" class="search-result-box"></div>
         </div>
@@ -592,21 +749,30 @@
 
     <div id="adminPanelPage" class="form-page">
         <h2>لوحة السحاب السرية الإدارية</h2>
+        
         <div class="box-light" style="border: 1px solid var(--success-color);">
-            <h3>نظام التسوية والمديونيات</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <h3 style="margin:0;">نظام التسوية والمديونيات</h3>
+                <button class="admin-download-btn" onclick="downloadAllDebts()">
+                    📥 📥 تحميل جميع المديونيات (PDF)
+                </button>
+            </div>
             <input type="text" id="adminSearchInput" placeholder="🔍 بحث بالاسم أو ID..." onkeyup="filterAdminTable()">
             <table class="admin-table">
                 <thead><tr><th>الاسم</th><th>ID</th><th>المديونية</th><th>إجراء</th></tr></thead>
                 <tbody id="adminClientsTableBody"></tbody>
             </table>
         </div>
+        
         <div class="box-light" style="border: 1px solid var(--primary-color);">
             <h3 style="font-size: 15px;">🔗 إعداد ربط وجلب وتحديث Google Sheets</h3>
             <div class="form-group"><label>1. رابط الـ Web App:</label><input type="text" id="scriptUrlInput"></div>
             <div class="form-group"><label>2. رابط الشيت الأساسي:</label><input type="text" id="sheetUrlInput"></div>
             <button type="button" onclick="saveAdminSettings()">حفظ وإقران السحابة بالإكسل</button>
         </div>
+        
         <div id="excelBox" class="excel-box"><h3 style="color:#000; background:#f4f4f5; padding:10px; font-size:14px; text-align:right;">📊 لوحة مراقبة الحسابات:</h3><iframe id="excelIframe" src=""></iframe></div>
+        
         <div class="box-light" style="margin-top:20px;">
             <h3>إضافة موظف جديد</h3>
             <form id="addStaffForm" onsubmit="handleCreateStaff(event)">
@@ -615,6 +781,7 @@
                 <button type="submit" style="background: linear-gradient(135deg, var(--success-color), #00994d) !important; color: #fff;">تفعيل الموظف</button>
             </form>
         </div>
+        
         <h3 style="color: var(--primary-color); font-size: 16px; margin-top:15px;">الموظفون الحاليون:</h3>
         <table class="admin-table"><thead><tr><th>الموظف</th><th>الباسورد</th><th>إجراء</th></tr></thead><tbody id="staffTableBody"></tbody></table>
         <button type="button" class="btn-secondary" onclick="backToLoginOrDash()" style="margin-top: 25px;">رجوع</button>
@@ -637,6 +804,7 @@
     const firebaseConfig = {
         apiKey: "AIzaSyAO2zc-pLPXrHFoWyx04urO2uCsPmhwXns",
         authDomain: "roka-recharge-agency.firebaseapp.com",
+        databaseURL: "https://roka-recharge-agency-default-rtdb.firebaseio.com",
         projectId: "roka-recharge-agency",
         storageBucket: "roka-recharge-agency.firebasestorage.app",
         messagingSenderId: "862633201388",
@@ -652,11 +820,11 @@
         tbody.innerHTML = "";
         snapshot.forEach(child => {
             let cl = child.val();
-            tbody.innerHTML += `<tr><td>${cl.name}</td><td>${cl.id}</td><td>${cl.debt || 0}$</td>
-            <td>
-                <button class="btn-danger" style="padding:5px; background:var(--accent-blue);" onclick="settleDebt('${child.key}', '${cl.name}')">تصفير</button>
-                <button class="btn-danger" style="padding:5px;" onclick="deleteClient('${child.key}', '${cl.name}')">حذف</button>
-            </td></tr>`;
+            tbody.innerHTML += '<tr><td>' + cl.name + '</td><td>' + cl.id + '</td><td>' + (cl.debt || 0) + '$</td>' +
+            '<td>' +
+                '<button class="btn-danger" style="padding:5px; background:var(--accent-blue);" onclick="settleDebt(\'' + child.key + '\', \'' + cl.name + '\')">تصفير</button>' +
+                '<button class="btn-danger" style="padding:5px;" onclick="deleteClient(\'' + child.key + '\', \'' + cl.name + '\')">حذف</button>' +
+            '</td></tr>';
         });
     });
 
@@ -674,9 +842,12 @@
         }
     }
 
-    let staffAccounts = []; let clientsDatabase = [];
-    let currentLoggedStaff = null; let currentAddingType = "وكيل";
-    let globalScriptUrl = ""; let globalSheetUrl = "";
+    let staffAccounts = [];
+    let clientsDatabase = [];
+    let currentLoggedStaff = null;
+    let currentAddingType = "وكيل";
+    let globalScriptUrl = "";
+    let globalSheetUrl = "";
 
     function searchByIdDirectly() {
         const id = document.getElementById('idSearchInput').value.trim();
@@ -711,13 +882,15 @@
     });
 
     db.ref('staff').on('value', (snapshot) => {
-        staffAccounts = []; snapshot.forEach((child) => { staffAccounts.push(child.val()); });
+        staffAccounts = [];
+        snapshot.forEach((child) => { staffAccounts.push(child.val()); });
         renderStaffTable();
         if(staffAccounts.length === 0) db.ref('staff/كريم').set({ username: "كريم", password: "123" });
     });
 
     db.ref('clients').on('value', (snapshot) => {
-        clientsDatabase = []; snapshot.forEach((child) => { clientsDatabase.push(child.val()); });
+        clientsDatabase = [];
+        snapshot.forEach((child) => { clientsDatabase.push(child.val()); });
         if(currentLoggedStaff) loadClientsDropdown();
     });
 
@@ -745,11 +918,12 @@
     }
 
     function renderStaffTable() {
-        const tbody = document.getElementById('staffTableBody'); tbody.innerHTML = "";
+        const tbody = document.getElementById('staffTableBody');
+        tbody.innerHTML = "";
         staffAccounts.forEach((st) => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td><strong>${st.username}</strong></td><td>${st.password}</td>
-            <td><button class="btn-danger" onclick="deleteStaff('${st.username}')">حذف</button></td>`;
+            tr.innerHTML = '<td><strong>' + st.username + '</strong></td><td>' + st.password + '</td>' +
+            '<td><button class="btn-danger" onclick="deleteStaff(\'' + st.username + '\')">حذف</button></td>';
             tbody.appendChild(tr);
         });
     }
@@ -762,7 +936,9 @@
         document.getElementById('addStaffForm').reset();
     }
 
-    function deleteStaff(username) { if(confirm("حذف الموظف؟")) db.ref('staff/' + username).remove(); }
+    function deleteStaff(username) {
+        if(confirm("حذف الموظف؟")) db.ref('staff/' + username).remove();
+    }
 
     function handleLogin(event) {
         event.preventDefault();
@@ -773,7 +949,7 @@
             currentLoggedStaff = match.username;
             document.getElementById('loginPage').classList.remove('active');
             document.getElementById('dashboardPage').classList.add('active');
-            document.getElementById('staffBadge').innerHTML = `الموظف المسؤول: <strong>${currentLoggedStaff}</strong>`;
+            document.getElementById('staffBadge').innerHTML = 'الموظف المسؤول: <strong>' + currentLoggedStaff + '</strong>';
             loadClientsDropdown();
         } else { alert("بيانات خاطئة!"); }
     }
@@ -783,9 +959,12 @@
         const dropdown = document.getElementById('clientSelect');
         dropdown.innerHTML = '<option value="">-- اختر الاسم --</option>';
         clientsDatabase.filter(c => c.type === typeSelected).forEach(c => {
-            const opt = document.createElement('option'); opt.value = c.name; opt.innerText = c.name; dropdown.appendChild(opt);
+            const opt = document.createElement('option');
+            opt.value = c.name;
+            opt.innerText = c.name;
+            dropdown.appendChild(opt);
         });
-        document.getElementById('clientStaticId').value = ""; 
+        document.getElementById('clientStaticId').value = "";
     }
 
     function handleClientSelectChange() {
@@ -797,17 +976,331 @@
 
     function lookupDebtById() {
         const searchId = document.getElementById('searchIdInput').value.trim();
-        const resultBox = document.getElementById('searchResult'); if(!searchId) return;
+        const fromDateVal = document.getElementById('searchFromDate').value;
+        const toDateVal = document.getElementById('searchToDate').value;
+        const resultBox = document.getElementById('searchResult');
+        
+        if(!searchId) {
+            resultBox.style.display = 'none';
+            return;
+        }
+        
         const found = clientsDatabase.find(c => c.id === searchId);
         resultBox.style.display = 'block';
-        if(found) {
-            resultBox.innerHTML = `📌 <strong>الاسم:</strong> ${found.name}<br>💰 <strong>المديونية:</strong> ${found.debt || 0} $<br>📊 <strong>الشحنات:</strong> ${found.totalOrders || 0}`;
-        } else { resultBox.innerHTML = `❌ الـ ID غير مسجل!`; }
+        
+        if(!found) {
+            resultBox.innerHTML = '❌ الـ ID غير مسجل!';
+            return;
+        }
+
+        const fromDate = fromDateVal ? new Date(fromDateVal + 'T00:00:00') : null;
+        const toDate = toDateVal ? new Date(toDateVal + 'T23:59:59') : null;
+        const hasDateFilter = fromDateVal || toDateVal;
+
+        db.ref('shipping_logs').once('value').then(snapshot => {
+            let logs = [];
+            snapshot.forEach(child => {
+                logs.push(child.val());
+            });
+            
+            let clientLogs = logs.filter(l => l.clientId === searchId);
+            
+            let filteredLogs = clientLogs;
+            if (hasDateFilter) {
+                filteredLogs = clientLogs.filter(l => {
+                    const logDate = parseLogDate(l.time);
+                    if (!logDate) return false;
+                    
+                    const logDateOnly = new Date(logDate.getFullYear(), logDate.getMonth(), logDate.getDate());
+                    const fromDateOnly = fromDate ? new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()) : null;
+                    const toDateOnly = toDate ? new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate()) : null;
+                    
+                    let match = true;
+                    if (fromDateOnly && logDateOnly < fromDateOnly) match = false;
+                    if (toDateOnly && logDateOnly > toDateOnly) match = false;
+                    return match;
+                });
+            }
+            
+            let filteredDebt = 0;
+            if (hasDateFilter) {
+                filteredDebt = filteredLogs.reduce((sum, l) => sum + (parseFloat(l.amount) || 0), 0);
+            } else {
+                filteredDebt = found.debt || 0;
+            }
+            
+            let html = '';
+            
+            html += '<h4>📌 بيانات العميل: ' + found.name + '</h4>';
+            html += '<div class="summary-row"><strong>الـ ID:</strong><span>' + found.id + '</span></div>';
+            html += '<div class="summary-row"><strong>الفئة:</strong><span>' + found.type + '</span></div>';
+            
+            if (hasDateFilter) {
+                html += '<div class="summary-row"><strong>📅 الفترة:</strong><span>' + (fromDateVal || 'البداية') + ' &rarr; ' + (toDateVal || 'النهاية') + '</span></div>';
+                html += '<div class="summary-row"><strong>💰 المديونية في الفترة:</strong><span>' + filteredDebt.toFixed(2) + ' $</span></div>';
+                html += '<div class="summary-row"><strong>📊 عدد الشحنات في الفترة:</strong><span>' + filteredLogs.length + '</span></div>';
+                html += '<div class="summary-row"><strong>💰 المديونية الكلية:</strong><span style="color:#b3b3b3;">' + (found.debt || 0) + ' $</span></div>';
+            } else {
+                html += '<div class="summary-row"><strong>💰 المديونية الكلية:</strong><span>' + (found.debt || 0) + ' $</span></div>';
+                html += '<div class="summary-row"><strong>📊 إجمالي الشحنات:</strong><span>' + (found.totalOrders || 0) + '</span></div>';
+            }
+            
+            if (filteredLogs.length > 0) {
+                html += '<h4 style="margin-top:15px;">📝 تفاصيل الشحنات:</h4>';
+                html += '<div style="max-height:250px; overflow-y:auto;">';
+                html += '<table class="log-table" id="logsTable">';
+                html += '<thead><tr><th>#</th><th>التاريخ</th><th>المبلغ</th><th>الوجهة</th><th>الموظف</th></tr></thead>';
+                html += '<tbody>';
+                
+                filteredLogs.forEach((log, index) => {
+                    html += '<tr>';
+                    html += '<td>' + (index + 1) + '</td>';
+                    html += '<td>' + log.time + '</td>';
+                    html += '<td style="color:var(--primary-color); font-weight:bold;">' + log.amount + ' $</td>';
+                    html += '<td>' + (log.destination === 'لنفسه' ? 'لنفسه' : (log.chargedId || 'للغير')) + '</td>';
+                    html += '<td>' + log.staff + '</td>';
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table></div>';
+            } else if (hasDateFilter) {
+                html += '<div class="no-logs">لا توجد شحنات في الفترة المحددة</div>';
+            }
+            
+            if (hasDateFilter) {
+                html += '<div class="download-section">';
+                html += '<button class="download-btn" onclick="downloadPeriodReport(\'' + found.name + '\', \'' + found.id + '\', \'' + (fromDateVal || '') + '\', \'' + (toDateVal || '') + '\', ' + filteredDebt.toFixed(2) + ', ' + filteredLogs.length + ')">';
+                html += '📥 📥 تحميل تقرير الفترة (PDF)';
+                html += '</button>';
+                html += '</div>';
+            }
+            
+            resultBox.innerHTML = html;
+        });
+    }
+    
+    function parseLogDate(dateStr) {
+        if (!dateStr) return null;
+        try {
+            let d = new Date(dateStr);
+            if (!isNaN(d.getTime())) return d;
+            
+            const parts = dateStr.split(',');
+            if (parts.length >= 2) {
+                const datePart = parts[0].trim();
+                const timePart = parts[1].trim();
+                
+                const dateSegments = datePart.split('/');
+                if (dateSegments.length === 3) {
+                    const month = parseInt(dateSegments[0].trim()) - 1;
+                    const day = parseInt(dateSegments[1].trim());
+                    const year = parseInt(dateSegments[2].trim());
+                    
+                    let hours = 0, minutes = 0, seconds = 0;
+                    const timeMatch = timePart.match(/(\d{1,2}):(\d{1,2}):(\d{1,2})\s*(AM|PM)/i);
+                    if (timeMatch) {
+                        hours = parseInt(timeMatch[1]);
+                        minutes = parseInt(timeMatch[2]);
+                        seconds = parseInt(timeMatch[3]);
+                        const ampm = timeMatch[4].toUpperCase();
+                        if (ampm === 'PM' && hours !== 12) hours += 12;
+                        if (ampm === 'AM' && hours === 12) hours = 0;
+                    }
+                    
+                    const result = new Date(year, month, day, hours, minutes, seconds);
+                    if (!isNaN(result.getTime())) return result;
+                }
+            }
+            return null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function downloadPeriodReport(clientName, clientId, fromDate, toDate, totalDebt, totalCount) {
+        let reportHtml = '<div id="pdf-report" style="width:210mm;padding:15mm;background:#ffffff;direction:rtl;font-family:Arial,sans-serif;color:#000;box-sizing:border-box;">';
+        reportHtml += '<div style="text-align:center;margin-bottom:15px;">';
+        reportHtml += '<h2 style="color:#cc0000;margin:0;font-size:22px;">Ali Recharge Agency</h2>';
+        reportHtml += '<h3 style="color:#333;margin:5px 0;font-size:16px;">تقرير المديونية</h3>';
+        reportHtml += '<hr style="border:1px solid #cc0000;margin:10px 0;">';
+        reportHtml += '</div>';
+
+        reportHtml += '<table style="width:100%;border-collapse:collapse;margin-bottom:15px;font-size:12px;color:#000;">';
+        reportHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;width:30%;">اسم العميل</td>';
+        reportHtml += '<td style="padding:6px;border:1px solid #ddd;">' + clientName + '</td></tr>';
+        reportHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">ID العميل</td>';
+        reportHtml += '<td style="padding:6px;border:1px solid #ddd;">' + clientId + '</td></tr>';
+        reportHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">الفترة من</td>';
+        reportHtml += '<td style="padding:6px;border:1px solid #ddd;">' + (fromDate || 'البداية') + '</td></tr>';
+        reportHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">الفترة إلى</td>';
+        reportHtml += '<td style="padding:6px;border:1px solid #ddd;">' + (toDate || 'النهاية') + '</td></tr>';
+        reportHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">إجمالي المديونية</td>';
+        reportHtml += '<td style="padding:6px;border:1px solid #ddd;color:#cc0000;font-weight:bold;">' + totalDebt + ' $</td></tr>';
+        reportHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">عدد الشحنات</td>';
+        reportHtml += '<td style="padding:6px;border:1px solid #ddd;">' + totalCount + '</td></tr>';
+        reportHtml += '<tr><td style="padding:6px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">تاريخ التقرير</td>';
+        reportHtml += '<td style="padding:6px;border:1px solid #ddd;">' + new Date().toLocaleDateString('en-US') + '</td></tr>';
+        reportHtml += '</table>';
+
+        reportHtml += '<h4 style="color:#333;margin:15px 0 10px;font-size:14px;">تفاصيل الشحنات</h4>';
+        reportHtml += '<table style="width:100%;border-collapse:collapse;font-size:11px;color:#000;">';
+        reportHtml += '<thead><tr style="background:#cc0000;color:#fff;">';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">#</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">التاريخ</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">المبلغ</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">الوجهة</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">الموظف</th>';
+        reportHtml += '</tr></thead><tbody>';
+
+        const table = document.getElementById('logsTable');
+        if (table) {
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach((row, i) => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 5) {
+                    const bg = i % 2 === 0 ? '#ffffff' : '#f9f9f9';
+                    reportHtml += '<tr style="background:' + bg + ';">';
+                    reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + cells[0].innerText + '</td>';
+                    reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + cells[1].innerText + '</td>';
+                    reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;color:#cc0000;">' + cells[2].innerText + '</td>';
+                    reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + cells[3].innerText + '</td>';
+                    reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + cells[4].innerText + '</td>';
+                    reportHtml += '</tr>';
+                }
+            });
+        }
+
+        reportHtml += '</tbody></table></div>';
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = reportHtml;
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.left = '-9999px';
+        tempDiv.style.top = '0';
+        document.body.appendChild(tempDiv);
+
+        const element = tempDiv.querySelector('#pdf-report');
+
+        html2canvas(element, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/jpeg', 0.98);
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210;
+            const pageHeight = 297;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save('تقرير_المديونية_' + clientName + '_' + (fromDate || 'all') + '_to_' + (toDate || 'all') + '.pdf');
+            document.body.removeChild(tempDiv);
+        }).catch(err => {
+            console.error('PDF Error:', err);
+            document.body.removeChild(tempDiv);
+        });
+    }
+
+    function downloadAllDebts() {
+        let totalAllDebts = 0;
+        let totalAllOrders = 0;
+
+        let reportHtml = '<div id="pdf-report" style="width:210mm;padding:15mm;background:#ffffff;direction:rtl;font-family:Arial,sans-serif;color:#000;box-sizing:border-box;">';
+        reportHtml += '<div style="text-align:center;margin-bottom:15px;">';
+        reportHtml += '<h2 style="color:#cc0000;margin:0;font-size:22px;">Ali Recharge Agency</h2>';
+        reportHtml += '<h3 style="color:#333;margin:5px 0;font-size:16px;">تقرير جميع المديونيات</h3>';
+        reportHtml += '<p style="color:#666;font-size:12px;margin:5px 0;">تاريخ التقرير: ' + new Date().toLocaleDateString('en-US') + ' | عدد العملاء: ' + clientsDatabase.length + '</p>';
+        reportHtml += '<hr style="border:1px solid #cc0000;margin:10px 0;">';
+        reportHtml += '</div>';
+
+        reportHtml += '<table style="width:100%;border-collapse:collapse;font-size:11px;color:#000;">';
+        reportHtml += '<thead><tr style="background:#cc0000;color:#fff;">';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">الاسم</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">ID</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">الفئة</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">المديونية</th>';
+        reportHtml += '<th style="border:1px solid #999;padding:8px;text-align:center;">عدد الشحنات</th>';
+        reportHtml += '</tr></thead><tbody>';
+
+        clientsDatabase.forEach((c, i) => {
+            const debt = c.debt || 0;
+            const orders = c.totalOrders || 0;
+            totalAllDebts += debt;
+            totalAllOrders += orders;
+            const bg = i % 2 === 0 ? '#ffffff' : '#f9f9f9';
+            reportHtml += '<tr style="background:' + bg + ';">';
+            reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + c.name + '</td>';
+            reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + c.id + '</td>';
+            reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + c.type + '</td>';
+            reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;color:#cc0000;font-weight:bold;">' + debt + ' $</td>';
+            reportHtml += '<td style="border:1px solid #ccc;padding:6px;text-align:center;">' + orders + '</td>';
+            reportHtml += '</tr>';
+        });
+
+        reportHtml += '</tbody></table>';
+
+        reportHtml += '<div style="margin-top:20px;padding:12px;background:#cc0000;color:#fff;text-align:center;font-weight:bold;font-size:14px;border-radius:4px;">';
+        reportHtml += 'الإجمالي الكلي: ' + totalAllDebts + ' $ &nbsp;&nbsp;|&nbsp;&nbsp; إجمالي الشحنات: ' + totalAllOrders;
+        reportHtml += '</div></div>';
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = reportHtml;
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.left = '-9999px';
+        tempDiv.style.top = '0';
+        document.body.appendChild(tempDiv);
+
+        const element = tempDiv.querySelector('#pdf-report');
+
+        html2canvas(element, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/jpeg', 0.98);
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210;
+            const pageHeight = 297;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save('تقرير_جميع_المديونيات_' + new Date().toLocaleDateString('en-US').replace(/\//g, '-') + '.pdf');
+            document.body.removeChild(tempDiv);
+        }).catch(err => {
+            console.error('PDF Error:', err);
+            document.body.removeChild(tempDiv);
+        });
     }
 
     function showAddClientModal(type) {
         currentAddingType = type;
-        document.getElementById('addClientTitle').innerText = `إضافة [${type}] جديد للمنظومة`;
+        document.getElementById('addClientTitle').innerText = 'إضافة [' + type + '] جديد للمنظومة';
         document.getElementById('dashboardPage').classList.remove('active');
         document.getElementById('addClientPage').classList.add('active');
     }
@@ -822,7 +1315,6 @@
         const name = document.getElementById('newClientName').value.trim();
         const id = document.getElementById('newClientId').value.trim();
         
-        // التحقق من وجود العميل مسبقاً لمنع التكرار
         const isExists = clientsDatabase.some(c => c.id === id);
         if (isExists) {
             alert("خطأ: هذا الـ ID مسجل بالفعل في المنظومة، لا يمكن تكرار نفس الـ ID!");
@@ -832,7 +1324,7 @@
         const clientPayload = { type: currentAddingType, name: name, id: id, debt: 0, totalOrders: 0 };
         db.ref('clients/' + id).set(clientPayload);
         sendToGoogleSheet("createTab", clientPayload);
-        alert(`تم الحفظ وإصدار أمر إنشاء ورقة عمل بالإكسل باسم: ${name}`);
+        alert('تم الحفظ وإصدار أمر إنشاء ورقة عمل بالإكسل باسم: ' + name);
         document.getElementById('addClientForm').reset();
         backToDashboard();
     }
@@ -846,7 +1338,7 @@
         let finalChargedId = staticId;
         if (chargeDestination === 'other') finalChargedId = document.getElementById('otherTargetId').value.trim();
         const now = new Date();
-        const formattedTime = now.toLocaleDateString('ar-EG') + ' ' + now.toLocaleTimeString('ar-EG');
+        const formattedTime = now.toLocaleDateString('en-US') + ', ' + now.toLocaleTimeString('en-US');
         const clientRef = db.ref('clients/' + staticId);
         clientRef.once('value').then((snapshot) => {
             const data = snapshot.val();
@@ -856,7 +1348,7 @@
             const report = { staff: currentLoggedStaff, clientName: clientName, clientId: staticId, destination: chargeDestination === 'self' ? 'لنفسه' : 'للغير', chargedId: finalChargedId, amount: amount, time: formattedTime };
             db.ref('shipping_logs').push().set(report);
             sendToGoogleSheet("appendRow", report);
-            alert(`تم الشحن وتوثيق الحركة في ملف إكسل العميل المخصص!`);
+            alert('تم الشحن وتوثيق الحركة في ملف إكسل العميل المخصص!');
             document.getElementById('chargeAmount').value = "";
         });
     }
@@ -865,11 +1357,17 @@
         const dest = document.querySelector('input[name="chargeDestination"]:checked').value;
         document.getElementById('otherIdGroup').style.display = dest === 'other' ? 'block' : 'none';
     }
+    
     function backToLoginOrDash() {
         document.getElementById('adminPanelPage').classList.remove('active');
         document.getElementById(currentLoggedStaff ? 'dashboardPage' : 'loginPage').classList.add('active');
     }
-    function logoutStaff() { currentLoggedStaff = null; document.getElementById('dashboardPage').classList.remove('active'); document.getElementById('loginPage').classList.add('active'); }
+    
+    function logoutStaff() {
+        currentLoggedStaff = null;
+        document.getElementById('dashboardPage').classList.remove('active');
+        document.getElementById('loginPage').classList.add('active');
+    }
 </script>
 </body>
 </html>
