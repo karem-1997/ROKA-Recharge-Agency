@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roka -Roka</title>
+    <title>Roka - Roka</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
     <style>
         :root {
             --bg-color: #0a0a0a;
@@ -18,17 +17,13 @@
             --input-bg: rgba(30, 30, 30, 0.7);
             --border-color: rgba(255, 26, 26, 0.3);
             --success-color: #00cc66;
+            --warning-color: #ff9500;
             --accent-blue: #ff3333;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 26, 26, 0.2);
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
         body { 
             background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 50%, #0a0a0a 100%);
@@ -599,6 +594,143 @@
             border: none; 
         }
 
+        /* ======= NEW: Delete Log Button Styles ======= */
+        .delete-log-btn {
+            background: linear-gradient(135deg, #ff4444, #cc0000) !important;
+            color: #fff;
+            padding: 4px 10px;
+            font-size: 11px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+        }
+
+        .delete-log-btn:hover {
+            background: linear-gradient(135deg, #ff6666, #ff3333) !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 68, 68, 0.5);
+        }
+
+        .delete-log-btn:disabled {
+            background: #555 !important;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .log-row-deleted {
+            opacity: 0.4;
+            text-decoration: line-through;
+            background: rgba(255, 0, 0, 0.05) !important;
+        }
+
+        .undo-delete-btn {
+            background: linear-gradient(135deg, var(--warning-color), #cc7700) !important;
+            color: #fff;
+            padding: 4px 10px;
+            font-size: 11px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            width: auto;
+            margin: 0 4px;
+            transition: all 0.3s ease;
+        }
+
+        .undo-delete-btn:hover {
+            background: linear-gradient(135deg, #ffaa33, #ff8800) !important;
+            transform: scale(1.05);
+        }
+
+        .delete-confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .delete-confirm-box {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 26, 26, 0.3);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .delete-confirm-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .delete-confirm-box p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .delete-confirm-box .confirm-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .delete-confirm-box button {
+            flex: 1;
+            margin: 0;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .btn-cancel {
+            background: transparent !important;
+            border: 1px solid var(--glass-border) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+        }
+
+        .btn-confirm-delete {
+            background: linear-gradient(135deg, #ff4444, #cc0000) !important;
+        }
+
+        .btn-confirm-delete:hover {
+            background: linear-gradient(135deg, #ff6666, #ff3333) !important;
+        }
+
+        .deleted-badge {
+            display: inline-block;
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff6666;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-right: 5px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -645,12 +777,28 @@
             .date-filter-row .form-group {
                 min-width: 100%;
             }
+
+            .delete-confirm-box {
+                padding: 20px;
+            }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteConfirmOverlay" class="delete-confirm-overlay">
+    <div class="delete-confirm-box">
+        <h3>⚠️ تأكيد حذف الشحنة</h3>
+        <p id="deleteConfirmText">هل أنت متأكد من حذف هذه الشحنة؟<br>سيتم خصم المبلغ من المديونية وإرجاع عدد الشحنات.</p>
+        <div class="confirm-buttons">
+            <button class="btn-cancel" onclick="cancelDelete()">إلغاء</button>
+            <button class="btn-confirm-delete" onclick="confirmDelete()">نعم، احذف</button>
+        </div>
+    </div>
+</div>
 
 <div class="admin-gear-container" onclick="openAdminPanel()">
     <span>⚙</span> <strong>لوحة المدير والـ Excel</strong>
@@ -749,7 +897,7 @@
 
     <div id="adminPanelPage" class="form-page">
         <h2>لوحة السحاب السرية الإدارية</h2>
-        
+
         <div class="box-light" style="border: 1px solid var(--success-color);">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                 <h3 style="margin:0;">نظام التسوية والمديونيات</h3>
@@ -763,16 +911,16 @@
                 <tbody id="adminClientsTableBody"></tbody>
             </table>
         </div>
-        
+
         <div class="box-light" style="border: 1px solid var(--primary-color);">
             <h3 style="font-size: 15px;">🔗 إعداد ربط وجلب وتحديث Google Sheets</h3>
             <div class="form-group"><label>1. رابط الـ Web App:</label><input type="text" id="scriptUrlInput"></div>
             <div class="form-group"><label>2. رابط الشيت الأساسي:</label><input type="text" id="sheetUrlInput"></div>
             <button type="button" onclick="saveAdminSettings()">حفظ وإقران السحابة بالإكسل</button>
         </div>
-        
+
         <div id="excelBox" class="excel-box"><h3 style="color:#000; background:#f4f4f5; padding:10px; font-size:14px; text-align:right;">📊 لوحة مراقبة الحسابات:</h3><iframe id="excelIframe" src=""></iframe></div>
-        
+
         <div class="box-light" style="margin-top:20px;">
             <h3>إضافة موظف جديد</h3>
             <form id="addStaffForm" onsubmit="handleCreateStaff(event)">
@@ -781,7 +929,7 @@
                 <button type="submit" style="background: linear-gradient(135deg, var(--success-color), #00994d) !important; color: #fff;">تفعيل الموظف</button>
             </form>
         </div>
-        
+
         <h3 style="color: var(--primary-color); font-size: 16px; margin-top:15px;">الموظفون الحاليون:</h3>
         <table class="admin-table"><thead><tr><th>الموظف</th><th>الباسورد</th><th>إجراء</th></tr></thead><tbody id="staffTableBody"></tbody></table>
         <button type="button" class="btn-secondary" onclick="backToLoginOrDash()" style="margin-top: 25px;">رجوع</button>
@@ -801,6 +949,7 @@
 </div>
 
 <script>
+
     const firebaseConfig = {
         apiKey: "AIzaSyAO2zc-pLPXrHFoWyx04urO2uCsPmhwXns",
         authDomain: "roka-recharge-agency.firebaseapp.com",
@@ -814,6 +963,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // ======= NEW: Delete Log System Variables =======
+    let pendingDeleteLogKey = null;
+    let pendingDeleteLogAmount = 0;
+    let pendingDeleteLogClientId = null;
+
     db.ref('clients').on('value', snapshot => {
         let tbody = document.getElementById('adminClientsTableBody');
         if(!tbody) return;
@@ -822,8 +976,8 @@
             let cl = child.val();
             tbody.innerHTML += '<tr><td>' + cl.name + '</td><td>' + cl.id + '</td><td>' + (cl.debt || 0) + '$</td>' +
             '<td>' +
-                '<button class="btn-danger" style="padding:5px; background:var(--accent-blue);" onclick="settleDebt(\'' + child.key + '\', \'' + cl.name + '\')">تصفير</button>' +
-                '<button class="btn-danger" style="padding:5px;" onclick="deleteClient(\'' + child.key + '\', \'' + cl.name + '\')">حذف</button>' +
+                '<button class="btn-danger" style="padding:5px; background:var(--accent-blue);" onclick="settleDebt(' + "'" + child.key + "'" + ', ' + "'" + cl.name + "'" + ')">تصفير</button>' +
+                '<button class="btn-danger" style="padding:5px;" onclick="deleteClient(' + "'" + child.key + "'" + ', ' + "'" + cl.name + "'" + ')">حذف</button>' +
             '</td></tr>';
         });
     });
@@ -911,10 +1065,10 @@
     }
 
     function openAdminPanel() {
-        if (prompt("الباسورد السري للمدير:") === "1997") {
+        if (prompt("الباسورد السري للمدير:") === "1987") {
             document.querySelectorAll('.form-page').forEach(p => p.classList.remove('active'));
             document.getElementById('adminPanelPage').classList.add('active');
-        } else { alert("غلط ياروكا كلمي كريم يفكرك!"); }
+        } else { alert("مرفوض!"); }
     }
 
     function renderStaffTable() {
@@ -923,7 +1077,7 @@
         staffAccounts.forEach((st) => {
             const tr = document.createElement('tr');
             tr.innerHTML = '<td><strong>' + st.username + '</strong></td><td>' + st.password + '</td>' +
-            '<td><button class="btn-danger" onclick="deleteStaff(\'' + st.username + '\')">حذف</button></td>';
+            '<td><button class="btn-danger" onclick="deleteStaff(' + "'" + st.username + "'" + ')">حذف</button></td>';
             tbody.appendChild(tr);
         });
     }
@@ -974,20 +1128,96 @@
         document.getElementById('clientStaticId').value = found ? found.id : "";
     }
 
+    // ======= NEW: Delete Shipment Functions =======
+
+    // Open delete confirmation modal
+    function openDeleteConfirm(logKey, amount, clientId) {
+        pendingDeleteLogKey = logKey;
+        pendingDeleteLogAmount = parseFloat(amount);
+        pendingDeleteLogClientId = clientId;
+
+        const overlay = document.getElementById('deleteConfirmOverlay');
+        const text = document.getElementById('deleteConfirmText');
+        text.innerHTML = 'هل أنت متأكد من حذف هذه الشحنة؟<br><br>' +
+            '<strong style="color:#ff4444;">المبلغ:</strong> ' + amount + ' $<br>' +
+            '<strong style="color:#ff4444;">العميل ID:</strong> ' + clientId + '<br><br>' +
+            'سيتم:<br>• خصم المبلغ من المديونية<br>• إنقاص عدد الشحنات بـ 1<br>• حذف السجل نهائياً';
+        overlay.style.display = 'flex';
+    }
+
+    // Cancel delete
+    function cancelDelete() {
+        pendingDeleteLogKey = null;
+        pendingDeleteLogAmount = 0;
+        pendingDeleteLogClientId = null;
+        document.getElementById('deleteConfirmOverlay').style.display = 'none';
+    }
+
+    // Confirm and execute delete
+    function confirmDelete() {
+        if (!pendingDeleteLogKey || !pendingDeleteLogClientId) {
+            cancelDelete();
+            return;
+        }
+
+        const logRef = db.ref('shipping_logs/' + pendingDeleteLogKey);
+        const clientRef = db.ref('clients/' + pendingDeleteLogClientId);
+
+        // First get current client data
+        clientRef.once('value').then((snapshot) => {
+            const clientData = snapshot.val();
+            if (!clientData) {
+                alert("خطأ: العميل غير موجود!");
+                cancelDelete();
+                return;
+            }
+
+            const currentDebt = parseFloat(clientData.debt) || 0;
+            const currentOrders = parseInt(clientData.totalOrders) || 0;
+            const newDebt = Math.max(0, currentDebt - pendingDeleteLogAmount);
+            const newOrders = Math.max(0, currentOrders - 1);
+
+            // Update client data
+            return clientRef.update({
+                debt: newDebt,
+                totalOrders: newOrders
+            });
+        }).then(() => {
+            // Delete the log
+            return logRef.remove();
+        }).then(() => {
+            alert('✅ تم حذف الشحنة بنجاح!\n\n• خصم ' + pendingDeleteLogAmount + '$ من المديونية\n• عدد الشحنات: -1');
+            cancelDelete();
+            // Refresh the search results
+            lookupDebtById();
+        }).catch((error) => {
+            console.error("Delete error:", error);
+            alert("❌ حدث خطأ أثناء الحذف: " + error.message);
+            cancelDelete();
+        });
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('deleteConfirmOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            cancelDelete();
+        }
+    });
+
     function lookupDebtById() {
         const searchId = document.getElementById('searchIdInput').value.trim();
         const fromDateVal = document.getElementById('searchFromDate').value;
         const toDateVal = document.getElementById('searchToDate').value;
         const resultBox = document.getElementById('searchResult');
-        
+
         if(!searchId) {
             resultBox.style.display = 'none';
             return;
         }
-        
+
         const found = clientsDatabase.find(c => c.id === searchId);
         resultBox.style.display = 'block';
-        
+
         if(!found) {
             resultBox.innerHTML = '❌ الـ ID غير مسجل!';
             return;
@@ -1000,41 +1230,43 @@
         db.ref('shipping_logs').once('value').then(snapshot => {
             let logs = [];
             snapshot.forEach(child => {
-                logs.push(child.val());
+                let log = child.val();
+                log._key = child.key; // Store Firebase key for deletion
+                logs.push(log);
             });
-            
+
             let clientLogs = logs.filter(l => l.clientId === searchId);
-            
+
             let filteredLogs = clientLogs;
             if (hasDateFilter) {
                 filteredLogs = clientLogs.filter(l => {
                     const logDate = parseLogDate(l.time);
                     if (!logDate) return false;
-                    
+
                     const logDateOnly = new Date(logDate.getFullYear(), logDate.getMonth(), logDate.getDate());
                     const fromDateOnly = fromDate ? new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()) : null;
                     const toDateOnly = toDate ? new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate()) : null;
-                    
+
                     let match = true;
                     if (fromDateOnly && logDateOnly < fromDateOnly) match = false;
                     if (toDateOnly && logDateOnly > toDateOnly) match = false;
                     return match;
                 });
             }
-            
+
             let filteredDebt = 0;
             if (hasDateFilter) {
                 filteredDebt = filteredLogs.reduce((sum, l) => sum + (parseFloat(l.amount) || 0), 0);
             } else {
                 filteredDebt = found.debt || 0;
             }
-            
+
             let html = '';
-            
+
             html += '<h4>📌 بيانات العميل: ' + found.name + '</h4>';
             html += '<div class="summary-row"><strong>الـ ID:</strong><span>' + found.id + '</span></div>';
             html += '<div class="summary-row"><strong>الفئة:</strong><span>' + found.type + '</span></div>';
-            
+
             if (hasDateFilter) {
                 html += '<div class="summary-row"><strong>📅 الفترة:</strong><span>' + (fromDateVal || 'البداية') + ' &rarr; ' + (toDateVal || 'النهاية') + '</span></div>';
                 html += '<div class="summary-row"><strong>💰 المديونية في الفترة:</strong><span>' + filteredDebt.toFixed(2) + ' $</span></div>';
@@ -1044,58 +1276,63 @@
                 html += '<div class="summary-row"><strong>💰 المديونية الكلية:</strong><span>' + (found.debt || 0) + ' $</span></div>';
                 html += '<div class="summary-row"><strong>📊 إجمالي الشحنات:</strong><span>' + (found.totalOrders || 0) + '</span></div>';
             }
-            
+
             if (filteredLogs.length > 0) {
                 html += '<h4 style="margin-top:15px;">📝 تفاصيل الشحنات:</h4>';
-                html += '<div style="max-height:250px; overflow-y:auto;">';
+                html += '<div style="max-height:350px; overflow-y:auto;">';
                 html += '<table class="log-table" id="logsTable">';
-                html += '<thead><tr><th>#</th><th>التاريخ</th><th>المبلغ</th><th>الوجهة</th><th>الموظف</th></tr></thead>';
+                html += '<thead><tr><th>#</th><th>التاريخ</th><th>المبلغ</th><th>الوجهة</th><th>الموظف</th><th>إجراء</th></tr></thead>';
                 html += '<tbody>';
-                
+
                 filteredLogs.forEach((log, index) => {
-                    html += '<tr>';
+                    const logKey = log._key || '';
+                    const amount = parseFloat(log.amount) || 0;
+                    html += '<tr id="log-row-' + logKey + '">';
                     html += '<td>' + (index + 1) + '</td>';
                     html += '<td>' + log.time + '</td>';
                     html += '<td style="color:var(--primary-color); font-weight:bold;">' + log.amount + ' $</td>';
                     html += '<td>' + (log.destination === 'لنفسه' ? 'لنفسه' : (log.chargedId || 'للغير')) + '</td>';
                     html += '<td>' + log.staff + '</td>';
+                    html += '<td>';
+                    html += '<button class="delete-log-btn" onclick="openDeleteConfirm(' + "'" + logKey + "'" + ', ' + amount + ', ' + "'" + searchId + "'" + ')" title="حذف الشحنة">🗑️ حذف</button>';
+                    html += '</td>';
                     html += '</tr>';
                 });
-                
+
                 html += '</tbody></table></div>';
             } else if (hasDateFilter) {
                 html += '<div class="no-logs">لا توجد شحنات في الفترة المحددة</div>';
             }
-            
+
             if (hasDateFilter) {
                 html += '<div class="download-section">';
-                html += '<button class="download-btn" onclick="downloadPeriodReport(\'' + found.name + '\', \'' + found.id + '\', \'' + (fromDateVal || '') + '\', \'' + (toDateVal || '') + '\', ' + filteredDebt.toFixed(2) + ', ' + filteredLogs.length + ')">';
+                html += '<button class="download-btn" onclick="downloadPeriodReport(' + "'" + found.name + "'" + ', ' + "'" + found.id + "'" + ', ' + "'" + (fromDateVal || '') + "'" + ', ' + "'" + (toDateVal || '') + "'" + ', ' + filteredDebt.toFixed(2) + ', ' + filteredLogs.length + ')">';
                 html += '📥 📥 تحميل تقرير الفترة (PDF)';
                 html += '</button>';
                 html += '</div>';
             }
-            
+
             resultBox.innerHTML = html;
         });
     }
-    
+
     function parseLogDate(dateStr) {
         if (!dateStr) return null;
         try {
             let d = new Date(dateStr);
             if (!isNaN(d.getTime())) return d;
-            
+
             const parts = dateStr.split(',');
             if (parts.length >= 2) {
                 const datePart = parts[0].trim();
                 const timePart = parts[1].trim();
-                
+
                 const dateSegments = datePart.split('/');
                 if (dateSegments.length === 3) {
                     const month = parseInt(dateSegments[0].trim()) - 1;
                     const day = parseInt(dateSegments[1].trim());
                     const year = parseInt(dateSegments[2].trim());
-                    
+
                     let hours = 0, minutes = 0, seconds = 0;
                     const timeMatch = timePart.match(/(\d{1,2}):(\d{1,2}):(\d{1,2})\s*(AM|PM)/i);
                     if (timeMatch) {
@@ -1106,7 +1343,7 @@
                         if (ampm === 'PM' && hours !== 12) hours += 12;
                         if (ampm === 'AM' && hours === 12) hours = 0;
                     }
-                    
+
                     const result = new Date(year, month, day, hours, minutes, seconds);
                     if (!isNaN(result.getTime())) return result;
                 }
@@ -1314,7 +1551,7 @@
         event.preventDefault();
         const name = document.getElementById('newClientName').value.trim();
         const id = document.getElementById('newClientId').value.trim();
-        
+
         const isExists = clientsDatabase.some(c => c.id === id);
         if (isExists) {
             alert("خطأ: هذا الـ ID مسجل بالفعل في المنظومة، لا يمكن تكرار نفس الـ ID!");
@@ -1357,12 +1594,12 @@
         const dest = document.querySelector('input[name="chargeDestination"]:checked').value;
         document.getElementById('otherIdGroup').style.display = dest === 'other' ? 'block' : 'none';
     }
-    
+
     function backToLoginOrDash() {
         document.getElementById('adminPanelPage').classList.remove('active');
         document.getElementById(currentLoggedStaff ? 'dashboardPage' : 'loginPage').classList.add('active');
     }
-    
+
     function logoutStaff() {
         currentLoggedStaff = null;
         document.getElementById('dashboardPage').classList.remove('active');
